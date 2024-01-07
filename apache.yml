@@ -1,0 +1,10 @@
+version: '3.1'
+
+services:
+
+  apache:
+    container_name: ubuntu-apache
+    image: pimarie/ubuntu:apache
+    ports:
+      - "127.0.0.1:8080:80"
+      - "8000:8000"

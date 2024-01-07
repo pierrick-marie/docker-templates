@@ -1,0 +1,15 @@
+version: '3.1'
+
+services:
+
+  lamp:
+    container_name: manjaro-lamp
+    image: pimarie/manjaro:lamp
+    ports:
+      - "127.0.0.1:3306:3306"
+      - "127.0.0.1:8080:80"
+      - "127.0.0.1:8000:8000"
+    command: /root/start-lamp.sh
+    tty: true
+    #volumes:
+    #  - ./:/home/dev/www/

@@ -1,0 +1,36 @@
+version: '3.1'
+
+services:
+
+  mysql:
+    container_name: oclock-mysql
+    image: pimarie/oclock:mysql
+    ports:
+      - "127.0.0.1:3306:3306"
+    networks:
+      - oclock-network
+    environment:
+      MARIADB_ROOT_PASSWORD: root_password
+      MARIADB_DATABASE: oclock_DB
+      MARIADB_USER: oclock 
+      MARIADB_PASSWORD: oclock_password
+
+  php:
+    container_name: oclock-php-apache
+    image: pimarie/oclock:php-apache
+    command : "bash -c 'apache2ctl -D FOREGROUND'"
+    ports:
+      - "127.0.0.1:8080:80"
+      - "8000:8000"
+    volumes:
+      - ./:/var/www/html/
+    networks:
+      - oclock-network
+    depends_on:
+      mysql:
+        condition: service_started
+
+networks:
+  oclock-network:
+    external: false
+    name: oclock-network
