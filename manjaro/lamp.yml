@@ -1,0 +1,26 @@
+version: '3.1'
+
+services:
+
+  lamp:
+    container_name: manjaro-lamp
+    image: pimarie/manjaro:lamp
+    ports:
+      # MySQL
+      - "127.0.0.1:3306:3306"
+      # Apache
+      - "127.0.0.1:8080:80"
+    # start apache and MySQL
+    command: /root/start-lamp.sh
+    tty: true
+    networks:
+      - dev-network
+    volumes:
+      # apache home web dev : http://localhost:8080/~dev
+      - ./:/home/dev/www/
+
+networks:
+  dev-network:
+    # use existing network
+    external: true
+    name: dev-network
