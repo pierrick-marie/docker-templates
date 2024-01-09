@@ -13,7 +13,7 @@ services:
     networks:
       - dev-network
     volumes:
-    # mount home dev
+      # mount home projects into node
       - /home/pirik/Documents/projets/:/home/node/
 
 networks:

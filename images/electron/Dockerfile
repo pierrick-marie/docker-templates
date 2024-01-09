@@ -10,24 +10,28 @@ FROM node:latest
 
 # install chromium to get all dependancies required
 RUN apt-get update && apt-get install chromium \
-    -yq --no-install-suggests \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* 
+	-yq --no-install-suggests \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/* 
 
 # copy the source into /app
-WORKDIR /app
-COPY . .
-RUN chown -R node /app
+# WORKDIR /app
+# COPY . .
+# RUN chown -R node /app
 
 # install node modules and perform an electron rebuild
-USER node
-RUN npm install
-RUN npx electron-rebuild
+# USER node
+# RUN npm install
+# RUN npx electron-rebuild
 
 # Electron needs root for sand boxing
 # see https://github.com/electron/electron/issues/17972
+# USER root
+# RUN chown root /app/node_modules/electron/dist/chrome-sandbox
+# RUN chmod 4755 /app/node_modules/electron/dist/chrome-sandbox
+
 USER root
-RUN chown root /app/node_modules/electron/dist/chrome-sandbox
-RUN chmod 4755 /app/node_modules/electron/dist/chrome-sandbox
+
+RUN echo 'root:root' | chpasswd
 
 # user node have to belong to video group to avoid warnings
 RUN usermod -a -G video node

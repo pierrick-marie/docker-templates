@@ -17,9 +17,11 @@ services:
     tty: true
     networks:
       - dev-network
-    # volumes:
-    # apache home web dev : http://localhost:8080/~dev
-    #  - ./:/home/dev/www/
+    volumes:
+      # mount home projects into node
+      - /home/pirik/Documents/projets/:/home/node/
+      # apache home web dev : http://localhost:8080/~dev
+      #  - ./:/home/dev/www/
 
 networks:
   dev-network:
