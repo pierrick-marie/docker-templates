@@ -1,6 +1,7 @@
 FROM manjarolinux/base:latest
 
-# install basic packages
+#########
+# *** Basic packages ***
 RUN pacman -Syy --noconfirm --needed \
     base-devel \
     shadow \
@@ -10,79 +11,116 @@ RUN pacman -Syy --noconfirm --needed \
     libseccomp \
     libtool \
     python-pip
+#########
 
-# install apache, mariadb, php, and PhpMyAdmin
-# doc : https://www.armandphilippot.com/article/installer-lamp-manjaro-linux
-# or : https://forum.manjaro.org/t/howto-install-apache-mariadb-mysql-php-lamp/13000
-RUN pacman -Syy --noconfirm --needed apache mariadb php php-apache phpmyadmin
+#########
+# *** About Apache, MariaDB, Php, and PhpMyAdmin ***
+# * MariaDB will come from a dedicated container 
+# * https://www.armandphilippot.com/article/installer-lamp-manjaro-linux
+# * https://forum.manjaro.org/t/howto-install-apache-mariadb-mysql-php-lamp/13000
+#########
 
-# Configure MariaDB
-RUN mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-
-# Configure PHP
+#########
+# *** Php and composer ***
+RUN pacman -Syy --noconfirm --needed php composer
 COPY ./config/php.ini /etc/php/php.ini
+#########
 
-# Configure Apache
+#########
+# *** Apache with Php ***
+RUN pacman -Syy --noconfirm --needed apache php-apache
 COPY ./config/httpd.conf /etc/httpd/conf/httpd.conf
 COPY ./config/httpd-userdir.conf /etc/httpd/conf/extra/httpd-userdir.conf
 COPY ./config/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
+#########
 
-# Configure PhpMyAdmin
+#########
+# PhpMyAdmin
+RUN pacman -Syy --noconfirm --needed phpmyadmin
 COPY ./config/httpd-phpmyadmin.conf /usr/share/webapps/phpMyAdmin/config.inc.php
+#########
 
-# install node
-RUN pacman -Syy --noconfirm --needed nodejs
+#########
+# *** Run Apache ***
+# RUN apachectl start
+#########
 
-# install chromium to get all needed for electron
+#########
+# *** NodeJs, yarn and nodemon ***
+RUN pacman -Syy --noconfirm --needed nodejs npm yarn
+RUN npm install -g nodemon
+#########
+
+#########
+# *** Chromium (needed for Electron) ***
 RUN pacman -Syy --noconfirm --needed chromium
+#########
 
-# install emacs-nox, just because I like him :) 
+#########
+# *** emacs-nox (just because I like him :) *** 
 RUN pacman -Syy --noconfirm --needed emacs-nox
+#########
 
-# clean install dir
+#########
+# *** clean install dir ***
 RUN rm -f /var/cache/pacman/pkg/*
+#########
 
-# Script de demarrage
-COPY ./config/start-up.sh /usr/local/bin/start-up.sh
-# Rendre le script exécutable
-RUN chmod +x /usr/local/bin/start-up.sh
+#########
+# *** Pacman ***
+# Enable color
+RUN sed -i "s/^#Color/Color/" /etc/pacman.conf
+#########
 
-# Script pour configurer MariaDB
-COPY ./config/secure-mariadb.sql /usr/local/bin/secure-mariadb.sql
-
+#########
+# *** root user ***
 # Changing root password to... "root" !
 # Be carefull with that !
 RUN echo "root:root" | chpasswd
 # Setup bashrc
-RUN echo "cd ;" > ~/.bashrc
+RUN echo "cd /root ;" > /root/.bashrc
 # Setup emacs
-RUN echo "(setq make-backup-files nil)" > ~/.emacs
-# Add color in pacman
-RUN sed -i "s/^#Color/Color/" /etc/pacman.conf
+RUN echo "(setq make-backup-files nil)" > /root/.emacs
+# Default apache file
+RUN echo "<h2>Hello Manjaro from Root</h2>" > /srv/http/index.php && \
+	echo "<?php phpinfo(); ?>" >> /srv/http/index.php
+#########
 
+#########
+# *** builder user ***
 # user 'builder' can be used as the running user for applications prohibiting root usage (pacman)
 # Default build from https://github.com/manjaro/manjaro-docker
 RUN id -u builder &>/dev/null || (useradd -d /builder -m builder && \
 	echo "builder ALL=(ALL) NOPASSWD: ALL" >>/etc/sudoers) 
 # Setup bash
-RUN echo "cd ;" > ~/.bashrc
+RUN echo "cd /builder ;" >> /builder/.bashrc
 # Add builder to video group, needed by electron ;)
 RUN usermod -a -G video builder
+# Setup emacs
+RUN echo "(setq make-backup-files nil)" > /builder/.emacs
+# Create directory to develop
+RUN mkdir /builder/projects
+RUN mkdir /builder/oclock
+# Create www directory for apache user dir 
+RUN mkdir /builder/www
+# Default apache file
+RUN echo "<h2>Hello Manjaro from Builder</h2>" > /builder/www/index.php && \
+	echo "<?php phpinfo(); ?>" >> /builder/www/index.php
+# Setup read access for apache
+RUN chmod -R 755 /builder
+RUN chown -R builder:builder /builder
+#########
 
+#########
+# *** Start up script ***
+COPY ./config/start-up.sh /usr/local/bin/start-up.sh
+# Rendre le script exécutable
+RUN chmod +x /usr/local/bin/start-up.sh
 # Start up script to finish configuration and run services
 # Do not edit this line !
 CMD ["/usr/local/bin/start-up.sh"]
+#########
 
+# End of build
 # Use builder user
 USER builder
-
-# Setup emacs
-RUN echo "(setq make-backup-files nil)" > ~/.emacs
-# Create directory to develop
-RUN mkdir ~/projects
-# Create www directory for apache user dir 
-RUN mkdir ~/www
-# Setup read access for apache
-RUN chmod -R 755 ~
-RUN echo "<2>Hello Manjaro</h2>" > ~/www/index.php && \
-	echo "<?php phpinfo(); ?>" >> ~/www/index.php

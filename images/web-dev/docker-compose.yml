@@ -2,35 +2,58 @@ version: '3.1'
 
 services:
 
-  electron:
-    container_name: electron-from-scratch
+  mariadb:
+    container_name: mariadb
+    image: mariadb:latest
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: dev
+      MARIADB_USER: dev
+      MARIADB_PASSWORD: p
+    networks:
+      - dev-network
+
+  web-dev:
+    container_name: web-dev
     # image: pimarie/manjaro:webdev-electron
-    # build: .
-    image: electron-from-scratch:latest
+    build: .
+    image: web-dev:latest
+    # Allow start X window
     privileged: true
-    # ports:
-      # MySQL
-      # - "127.0.0.1:3306:3306"
+    ports:
       # Apache
-      # - "127.0.0.1:8080:80"
+      - "127.0.0.1:8080:80"
       # Others
-      # - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8001:8001"
+      - "127.0.0.1:8010:8010"
+      - "127.0.0.1:8100:8100"
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3001:3001"
+      - "127.0.0.1:3010:3010"
+      - "127.0.0.1:3100:3100"
     volumes:
       # mount X11 folder
       - /tmp/.X11-unix:/tmp/.X11-unix
       # mount home projects into /builder (home of builder user)
-      # - ~/Documents/projets/:/builder/projects
-      # - ~/Documents/oclock/:/builder/oclock
+      - ~/Documents/projets/:/builder/projects
+      - ~/Documents/oclock/:/builder/oclock
     environment:
       DISPLAY: $DISPLAY
     # WARNING: Do not override command !
-    command: /usr/local/bin/start-up.sh
+      # command: /usr/local/bin/start-up.sh
     # keep container running
     tty: true
+    networks:
+      - dev-network
+    depends_on:
+      mariadb:
+        condition: service_started
 
 networks:
   dev-network:
-    # use existing network
-    external: true
+    external: false
     name: dev-network
 
