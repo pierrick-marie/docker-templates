@@ -93,23 +93,8 @@ RUN echo "<h2>Hello Manjaro from Root</h2>" > /srv/http/index.php && \
 # Default build from https://github.com/manjaro/manjaro-docker
 RUN id -u builder &>/dev/null || (useradd -d /builder -m builder && \
 	echo "builder ALL=(ALL) NOPASSWD: ALL" >>/etc/sudoers) 
-# Setup bash
-RUN echo "cd /builder ;" >> /builder/.bashrc
 # Add builder to video group, needed by electron ;)
 RUN usermod -a -G video builder
-# Setup emacs
-RUN echo "(setq make-backup-files nil)" > /builder/.emacs
-# Create directory to develop
-RUN mkdir /builder/projects
-RUN mkdir /builder/oclock
-# Create www directory for apache user dir 
-RUN mkdir /builder/www
-# Default apache file
-RUN echo "<h2>Hello Manjaro from Builder</h2>" > /builder/www/index.php && \
-	echo "<?php phpinfo(); ?>" >> /builder/www/index.php
-# Setup read access for apache
-RUN chmod -R 755 /builder
-RUN chown -R builder:builder /builder
 #########
 
 #########
@@ -122,6 +107,23 @@ RUN chmod +x /usr/local/bin/start-up.sh
 CMD ["/usr/local/bin/start-up.sh"]
 #########
 
-# End of build
-# Use builder user
+#########
+# *** Configure user
 USER builder
+# Oh My Bash
+RUN bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+COPY ./config/bashrc /builder/.bashrc
+# Setup emacs
+RUN echo "(setq make-backup-files nil)" > /builder/.emacs
+# Create directory to develop
+RUN mkdir /builder/projects
+RUN mkdir /builder/oclock
+# Create www directory for apache user dir 
+RUN mkdir /builder/www
+# Default apache file
+RUN echo "<h2>Hello Manjaro from Builder</h2>" > /builder/www/index.php && \
+	echo "<?php phpinfo(); ?>" >> /builder/www/index.php
+# Setup read access for apache
+RUN sudo chmod -R 755 /builder
+RUN sudo chown -R builder:builder /builder
+#########

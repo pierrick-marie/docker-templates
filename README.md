@@ -24,6 +24,7 @@ It provides:
 * NodeJs
 * Electron with a support for X11 window
 * pacman from Manjaro
+* oh my bash
 
 # Java environment
 

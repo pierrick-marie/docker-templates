@@ -17,6 +17,7 @@ The container provides:
 * NodeJs
 * Electron with a support for X11 window
 * pacman from Manjaro
+* oh my bash
 
 MariaDB is separated in a dedicated container. _docker-composer.yml_ connects the containers together.
 
