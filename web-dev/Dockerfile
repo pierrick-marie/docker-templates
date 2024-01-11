@@ -3,14 +3,15 @@ FROM manjarolinux/base:latest
 #########
 # *** Basic packages ***
 RUN pacman -Syy --noconfirm --needed \
-    base-devel \
-    shadow \
-    git \
-    git-lfs \
-    cmake \
-    libseccomp \
-    libtool \
-    python-pip
+	openssh \
+    	base-devel \
+    	shadow \
+    	git \
+    	git-lfs \
+    	cmake \
+    	libseccomp \
+    	libtool \
+    	python-pip
 #########
 
 #########

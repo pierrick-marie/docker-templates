@@ -15,12 +15,14 @@ You can find in [web-dev](./web-dev/) folder all the instructions to start a web
 
 It provides: 
 
+* ssh
+* git
 * Apache
 * MariaDB
 * Php
 * PhpMyAdmin
 * NodeJs
-* Electron with X11 window
+* Electron with a support for X11 window
 * pacman from Manjaro
 
 # Java environment
