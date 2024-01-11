@@ -20,7 +20,7 @@ The container provides:
 
 MariaDB is separated in a dedicated container. _docker-composer.yml_ connects the containers together.
 
-The default user is _builder_. You can use it to edit mounted files from your host.
+The default user is _builder_. You can use it to edit mounted files from your host. It belongs to sudo group.
 
 # How use it?
 
