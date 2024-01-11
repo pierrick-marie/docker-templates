@@ -88,5 +88,6 @@ Many configuration files are placed in folder _config_. They are copied in the c
 
 You can edit that files. Don't forget to re-build the image after.
 
-_start-up.sh_ is a script executed at start up of the container. It runs apache and change right access for `/dev/dri/card0`. This is necessary to execute Electron.
+`start-up.sh` is the script executed at start up of the container. It runs apache and change right access for `/dev/dri/card0`. This is necessary to execute Electron.  
+_I strongly recommend to not edit this file and let the script be executed at start up of the container !_
 
