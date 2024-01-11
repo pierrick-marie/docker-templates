@@ -25,7 +25,7 @@ services:
     ports:
       # Apache
       - "127.0.0.1:8080:80"
-      # Others
+      # Others, many 
       - "127.0.0.1:8000:8000"
       - "127.0.0.1:8001:8001"
       - "127.0.0.1:8010:8010"
@@ -35,15 +35,14 @@ services:
       - "127.0.0.1:3010:3010"
       - "127.0.0.1:3100:3100"
     volumes:
-      # mount X11 folder
+      # mount X11 folder, needed for Electro
       - /tmp/.X11-unix:/tmp/.X11-unix
-      # mount home projects into /builder (home of builder user)
+      # example: mount home projects into /builder (home of builder user)
       - ~/Documents/projets/:/builder/projects
-      - ~/Documents/oclock/:/builder/oclock
     environment:
       DISPLAY: $DISPLAY
     # WARNING: Do not override command !
-      # command: /usr/local/bin/start-up.sh
+      # command: nothing
     # keep container running
     tty: true
     networks:
