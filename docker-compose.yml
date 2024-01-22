@@ -15,21 +15,49 @@ services:
     networks:
       - dev-network
 
-  web-dev:
-    container_name: web-dev
-    # image: pimarie/manjaro:webdev-electron
-    build: .
-    image: web-dev:latest
+  my-php:
+    container_name: my-php
+    build:
+      context: .
+      dockerfile: ./php-Dockerfile
+    image: my/php:latest
     # Allow start X window
     privileged: true
     ports:
       # Apache
       - "127.0.0.1:8080:80"
-      # Others, many 
+      # Others, pre-configured
       - "127.0.0.1:8000:8000"
       - "127.0.0.1:8001:8001"
       - "127.0.0.1:8010:8010"
       - "127.0.0.1:8100:8100"
+    volumes:
+      # mount X11 folder, needed for Electro
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      # example: mount home projects into /builder (home of builder user)
+      - ~/Documents/projets/:/builder/projects
+    environment:
+      DISPLAY: $DISPLAY
+    # WARNING: Do not override command !
+      # command: nothing
+    # keep container running
+    tty: true
+    networks:
+      - dev-network
+    depends_on:
+      mariadb:
+        condition: service_started
+
+  my-node:
+    container_name: my-node
+    build:
+      context: .
+      dockerfile: ./node-Dockerfile
+    image: my/node:latest
+    # Allow start X window
+    privileged: true
+    ports:
+      # Nodes
       - "127.0.0.1:3000:3000"
       - "127.0.0.1:3001:3001"
       - "127.0.0.1:3010:3010"

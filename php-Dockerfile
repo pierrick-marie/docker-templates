@@ -42,22 +42,6 @@ COPY ./config/httpd-phpmyadmin.conf /usr/share/webapps/phpMyAdmin/config.inc.php
 #########
 
 #########
-# *** Run Apache ***
-# RUN apachectl start
-#########
-
-#########
-# *** NodeJs, yarn and nodemon ***
-RUN pacman -Syy --noconfirm --needed nodejs npm yarn
-RUN npm install -g nodemon
-#########
-
-#########
-# *** Chromium (needed for Electron) ***
-RUN pacman -Syy --noconfirm --needed chromium
-#########
-
-#########
 # *** emacs-nox (just because I like him :) *** 
 RUN pacman -Syy --noconfirm --needed emacs-nox
 #########
@@ -99,12 +83,12 @@ RUN usermod -a -G video builder
 
 #########
 # *** Start up script ***
-COPY ./config/start-up.sh /usr/local/bin/start-up.sh
+COPY ./config/apache-start.sh /usr/local/bin/apache-start.sh
 # Rendre le script exécutable
-RUN chmod +x /usr/local/bin/start-up.sh
+RUN chmod +x /usr/local/bin/apache-start.sh
 # Start up script to finish configuration and run services
 # Do not edit this line !
-CMD ["/usr/local/bin/start-up.sh"]
+CMD ["/usr/local/bin/apache-start.sh"]
 #########
 
 #########
