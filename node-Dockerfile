@@ -11,7 +11,10 @@ RUN pacman -Syy --noconfirm --needed \
     	cmake \
     	libseccomp \
     	libtool \
-    	python-pip
+    	python-pip \
+	fuse-common \
+	extra/fuse2 \
+	extra/fuse3
 #########
 
 #########
