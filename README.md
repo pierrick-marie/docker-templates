@@ -89,10 +89,15 @@ Read the [configuration file](./config/httpd-userdir.conf).
 
 ### Database
 
-The database is available directly from your host through the port number _3306_.
+The database is available from _mariadb:latest_ host: `mariadb`and default port number: `3306`.
 
-From the container, the database is available from _mariadb_ host. MariaDB is started with new database `dev` and a user `dev` with password `p`.  
-Password of root user is `root`.
+MariaDB is started with a new database `dev_DB` and a user `dev` with password `p`. Password for root user is `root`.
+
+You can connect to mariadb with the following command:
+
+```sh
+mysql -h mariadb -u dev -b dev_DB -p
+```
 
 ## Technical points
 

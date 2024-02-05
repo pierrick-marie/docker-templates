@@ -9,7 +9,7 @@ services:
       - "127.0.0.1:3306:3306"
     environment:
       MARIADB_ROOT_PASSWORD: root
-      MARIADB_DATABASE: dev
+      MARIADB_DATABASE: dev_DB
       MARIADB_USER: dev
       MARIADB_PASSWORD: p
     networks:
