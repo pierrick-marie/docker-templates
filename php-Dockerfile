@@ -15,20 +15,13 @@ RUN pacman -Syy --noconfirm --needed \
 #########
 
 #########
-# *** About Apache, MariaDB, Php, and PhpMyAdmin ***
-# * MariaDB will come from a dedicated container 
-# * https://www.armandphilippot.com/article/installer-lamp-manjaro-linux
-# * https://forum.manjaro.org/t/howto-install-apache-mariadb-mysql-php-lamp/13000
-#########
-
-#########
 # *** Php and composer ***
 RUN pacman -Syy --noconfirm --needed php composer
 COPY ./config/php.ini /etc/php/php.ini
 #########
 
 #########
-# *** Apache with Php ***
+# *** Apache and Php module ***
 RUN pacman -Syy --noconfirm --needed apache php-apache
 COPY ./config/httpd.conf /etc/httpd/conf/httpd.conf
 COPY ./config/httpd-userdir.conf /etc/httpd/conf/extra/httpd-userdir.conf
@@ -36,9 +29,8 @@ COPY ./config/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
 #########
 
 #########
-# PhpMyAdmin
-RUN pacman -Syy --noconfirm --needed phpmyadmin
-COPY ./config/httpd-phpmyadmin.conf /usr/share/webapps/phpMyAdmin/config.inc.php
+# *** MariaDB Client ***
+RUN pacman -Syy --noconfirm --needed extra/mariadb-clients
 #########
 
 #########
@@ -52,7 +44,7 @@ RUN rm -f /var/cache/pacman/pkg/*
 #########
 
 #########
-# *** Pacman ***
+# *** Pacman config ***
 # Enable color
 RUN sed -i "s/^#Color/Color/" /etc/pacman.conf
 #########

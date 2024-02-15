@@ -39,7 +39,7 @@ RUN rm -f /var/cache/pacman/pkg/*
 #########
 
 #########
-# *** Pacman ***
+# *** Pacman config ***
 # Enable color
 RUN sed -i "s/^#Color/Color/" /etc/pacman.conf
 #########

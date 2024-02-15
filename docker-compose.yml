@@ -6,44 +6,93 @@ services:
     container_name: mariadb
     image: mariadb:latest
     ports:
-      - "127.0.0.1:3306:3306"
+      # Available from localhost on port 3307
+      - "127.0.0.1:3307:3306"
     environment:
       MARIADB_ROOT_PASSWORD: root
-      MARIADB_DATABASE: dev_DB
-      MARIADB_USER: dev
-      MARIADB_PASSWORD: p
+      # For databases, read SQL scripts in ./config/databases/ 
     networks:
-      - dev-network
+      # Same network for all containers
+      - my-dev-network
+    volumes:
+      # Use a docker volume to store data
+      - db:/var/lib/mysql
+      # entry point scripts
+      - ./config/databases:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      # Available from localhost on port 8001
+      - 127.0.0.1:8001:80
+    environment:
+      PMA_HOST: mariadb
+      PMA_USER: root
+      PMA_PASSWORD: root
+    networks:
+      # Same network for all containers
+      - my-dev-network
+    depends_on:
+      mariadb:
+        condition: service_started
+
+  wordpress:
+    image: wordpress
+    restart: always
+    ports:
+      # Available from localhost on port 8002
+      - 8002:80
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      # Workpress database confogured in ./config/databases/01-wordpress.sql
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: p
+      WORDPRESS_DB_NAME: wordpress
+    networks:
+      # Same network for all containers
+      - my-dev-network
+    depends_on:
+      mariadb:
+        condition: service_started
+    volumes:
+      # Docker volume to store data
+      - wordpress:/var/www/html
 
   my-php:
     container_name: my-php
     build:
+      # Script to build image 
+      # The image is based on Manjaro:latest
       context: .
       dockerfile: ./php-Dockerfile
     image: my/php:latest
     # Allow start X window
     privileged: true
     ports:
-      # Apache
+      # Apache available from localhost on port 8080 
       - "127.0.0.1:8080:80"
-      # Others, pre-configured
-      - "127.0.0.1:8000:8000"
-      - "127.0.0.1:8001:8001"
-      - "127.0.0.1:8010:8010"
-      - "127.0.0.1:8100:8100"
+      # Others, pre-configured ports
+      - "127.0.0.1:8081:8081"
+      - "127.0.0.1:8082:8082"
+      - "127.0.0.1:8083:8083"
+      - "127.0.0.1:8084:8084"
+      - "127.0.0.1:8085:8085"
     volumes:
       # mount X11 folder, needed for Electro
       - /tmp/.X11-unix:/tmp/.X11-unix
       # example: mount home projects into /builder (home of builder user)
       - ~/Documents/projets/:/builder/projects
+      - ~/Documents/oclock/:/builder/oclock
     environment:
       DISPLAY: $DISPLAY
-    # WARNING: Do not override command !
+    # WARNING: Do not override command instruction !
       # command: nothing
     # keep container running
     tty: true
     networks:
-      - dev-network
+      # Same network for all containers
+      - my-dev-network
     depends_on:
       mariadb:
         condition: service_started
@@ -51,17 +100,21 @@ services:
   my-node:
     container_name: my-node
     build:
+      # Script to build image 
+      # The image is based on Manjaro:latest
       context: .
       dockerfile: ./node-Dockerfile
     image: my/node:latest
     # Allow start X window
     privileged: true
     ports:
-      # Nodes
+      # Nodes and other default port available from localhost
       - "127.0.0.1:3000:3000"
       - "127.0.0.1:3001:3001"
-      - "127.0.0.1:3010:3010"
-      - "127.0.0.1:3100:3100"
+      - "127.0.0.1:3002:3002"
+      - "127.0.0.1:3003:3003"
+      - "127.0.0.1:3004:3004"
+      - "127.0.0.1:3005:3005"
     volumes:
       # mount X11 folder, needed for Electro
       - /tmp/.X11-unix:/tmp/.X11-unix
@@ -74,13 +127,19 @@ services:
     # keep container running
     tty: true
     networks:
-      - dev-network
+      # Same network for all containers
+      - my-dev-network
     depends_on:
       mariadb:
         condition: service_started
 
 networks:
-  dev-network:
+  my-dev-network:
     external: false
-    name: dev-network
+    name: my-dev-network
 
+volumes:
+  # Used by workpress
+  wordpress:
+  # Used by mariadb
+  db:
