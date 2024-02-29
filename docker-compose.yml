@@ -10,15 +10,15 @@ services:
       - "127.0.0.1:3307:3306"
     environment:
       MARIADB_ROOT_PASSWORD: root
-      # For databases, read SQL scripts in ./config/databases/ 
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: p
     networks:
       # Same network for all containers
       - my-dev-network
     volumes:
       # Use a docker volume to store data
       - db:/var/lib/mysql
-      # entry point scripts
-      - ./config/databases:/docker-entrypoint-initdb.d
 
   phpmyadmin:
     image: phpmyadmin

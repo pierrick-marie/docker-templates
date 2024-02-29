@@ -73,9 +73,10 @@ The database is also available from the docker network `my-dev-network` on the h
 Root password is `root` :D  
 All data are stored in the docker volume `db`.
 
-Two databases are configured. One for wordpress and one to develop. The databases are configured from the entry points in `./config/databases`.  
-It's not really "docker proof" to create two databases in the same container, but my purpose is providing a complete and ready to use environment to develop.  
-It's not a production environment ready to deploy on the web. As a consequence I choose the simplicity with one container and many databases instead of many containers with one database.
+One database is configured for Wordpress. There is a user `wordpress` with password `p` to access to the database.  
+I suggest to use PhpMyAdmin to create new databases for other projects in the same MariaDB container. (@see PhpMyAdmin bellow.)
+I know it's not a "docker proof" approach, but my purpose is providing a complete and ready to use environment to develop.
+It's not a production environment ready to deploy on the web. As a consequence I choose the simplicity with one container and many databases instead of many containers for one database each.
 
 ### Wordpress
 
@@ -93,11 +94,11 @@ That database is free to use for any web application.
 
 # PhpMyAdmin
 
-PhpMyAdmin is configured with MariaDB. You can access to its interface from your localhost on port number `8001`.
+PhpMyAdmin is configured with MariaDB. You can access to its interface here:  [http://localhost:8001](http://localhost:8001).
 
 # Wordpress
 
-Wordpress is configured to use MariaDB and the database _wordpress_. You can access to the web site from your localhost on port number `8002`.
+Wordpress is configured to use MariaDB and the database _wordpress_. You can access to the web site here: [http://localhost:8002](http://localhost:8002).
 
 # PHP
 
