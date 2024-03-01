@@ -21,7 +21,8 @@ services:
       - db:/var/lib/mysql
 
   phpmyadmin:
-    image: phpmyadmin
+    container_name: phpmyadmin
+    image: phpmyadmin:latest
     restart: always
     ports:
       # Available from localhost on port 8001
@@ -38,7 +39,8 @@ services:
         condition: service_started
 
   wordpress:
-    image: wordpress
+    container_name: wordpress
+    image: wordpress:latest
     restart: always
     ports:
       # Available from localhost on port 8002
@@ -61,12 +63,12 @@ services:
 
   my-php:
     container_name: my-php
+    image: manjaro/php
     build:
       # Script to build image 
       # The image is based on Manjaro:latest
       context: .
       dockerfile: ./php-Dockerfile
-    image: my/php:latest
     # Allow start X window
     privileged: true
     ports:
@@ -99,12 +101,12 @@ services:
 
   my-node:
     container_name: my-node
+    image: manjaro/node
     build:
       # Script to build image 
       # The image is based on Manjaro:latest
       context: .
       dockerfile: ./node-Dockerfile
-    image: my/node:latest
     # Allow start X window
     privileged: true
     ports:
