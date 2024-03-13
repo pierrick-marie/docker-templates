@@ -63,7 +63,7 @@ services:
 
   my-php:
     container_name: my-php
-    image: manjaro/php
+    image: manjaro/php:latest
     build:
       # Script to build image 
       # The image is based on Manjaro:latest
@@ -101,7 +101,7 @@ services:
 
   my-node:
     container_name: my-node
-    image: manjaro/node
+    image: manjaro/node:latest
     build:
       # Script to build image 
       # The image is based on Manjaro:latest
@@ -118,8 +118,9 @@ services:
       - "127.0.0.1:3004:3004"
       - "127.0.0.1:3005:3005"
     volumes:
-      # mount X11 folder, needed for Electro
+      # mount X11 folder, needed for Electron
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - /run/dbus/system_bus_socket:/run/dbus/system_bus_socket
       # example: mount home projects into /builder (home of builder user)
       - ~/Documents/projets/:/builder/projects
     environment:

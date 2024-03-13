@@ -25,7 +25,6 @@ COPY ./config/php.ini /etc/php/php.ini
 RUN pacman -Syy --noconfirm --needed apache php-apache
 COPY ./config/httpd.conf /etc/httpd/conf/httpd.conf
 COPY ./config/httpd-userdir.conf /etc/httpd/conf/extra/httpd-userdir.conf
-COPY ./config/httpd-phpmyadmin.conf /etc/httpd/conf/extra/httpd-phpmyadmin.conf
 #########
 
 #########
